@@ -5,6 +5,7 @@ import com.bookit.utilities.BookItApiUtil;
 import com.bookit.utilities.ConfigurationReader;
 import com.bookit.utilities.DBUtils;
 import com.bookit.utilities.Environment;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -129,8 +130,33 @@ public class ApiStepDefs {
                 .and().header("Authorization", token)
                 .log().all()
                 .when()
-                .post(Environment.BASE_URL + path);
+                .post(Environment.BASE_URL + path)
+                .then().log().all().extract().response();
+
+    }
+
+    @Then("I delete previously added student")
+    public void i_delete_previously_added_student(Map<String,String> studentInfo) {
+
+        //1.send a get request to get token with student information
+        String studentToken = BookItApiUtil.generateToken(studentInfo.get("email"), studentInfo.get("password"));
+
+        //2.send a get request to /api/users/me endpoint and get the id number
+        int idToDelete = given().accept(ContentType.JSON)
+                .and().header("Authorization", studentToken)
+                .when()
+                .get(Environment.BASE_URL+"/api/users/me")
+                .then().statusCode(200).extract().jsonPath().getInt("id");
+
+        //3.send a delete request as a teacher to /api/students/{id} endpoint to delete the student
+        String teacherToken = BookItApiUtil.generateToken(Environment.TEACHER_EMAIL, Environment.TEACHER_PASSWORD);
+
+        given().pathParam("id", idToDelete)
+                .and().header("Authorization", teacherToken)
+                .when().delete(Environment.BASE_URL+"/api/students/{id}")
+                .then().statusCode(204);
 
 
     }
-}
+
+ }
