@@ -15,6 +15,7 @@ public class BookItApiUtil {
                 .queryParam("password", password)
                 .when()
                 .get(Environment.BASE_URL + "/sign")
+//                .get("https://qa2.bookit.cydeo.com/me")
                 .then().log().all().extract().response();
 
         String token = response.path("accessToken");

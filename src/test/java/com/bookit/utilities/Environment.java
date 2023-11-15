@@ -18,7 +18,7 @@ public class Environment {
         public static final String LEADER_EMAIL;
         public static final String LEADER_PASSWORD;
 
-    public static Properties properties;
+        public static Properties properties;
 
 
     static {
@@ -31,7 +31,7 @@ public class Environment {
             try {
 
                 String path = System.getProperty("user.dir") + "/src/test/resources/Environments/" + environment + ".properties";
-                // C:\Users\Zulpikar\IdeaProjects\EU9-BookIT\src\test\resources\Environments\qa1.properties
+                // C:\Users\Asus\IdeaProjects\Bookit10\src\test\resources\Environments\qa1.properties
 
                 FileInputStream input = new FileInputStream(path);
                 properties = new Properties();

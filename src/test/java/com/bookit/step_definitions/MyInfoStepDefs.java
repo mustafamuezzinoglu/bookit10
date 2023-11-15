@@ -4,9 +4,8 @@ package com.bookit.step_definitions;
 import com.bookit.pages.SelfPage;
 import com.bookit.pages.SignInPage;
 import com.bookit.utilities.*;
-import cucumber.runtime.Env;
+
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 

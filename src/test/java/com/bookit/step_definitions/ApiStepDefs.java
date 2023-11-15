@@ -22,6 +22,9 @@ public class ApiStepDefs {
     String token;
     Response response;
     String emailGlobal;
+    String studentEmail;
+    String studentPassword;
+
     @Given("I logged Bookit api using {string} and {string}")
     public void i_logged_Bookit_api_using_and(String email, String password) {
 
@@ -47,7 +50,6 @@ public class ApiStepDefs {
         Assert.assertEquals(statusCode, response.statusCode());
     }
 
-
     @Then("the information about current user from api and database should match")
     public void theInformationAboutCurrentUserFromApiAndDatabaseShouldMatch() {
         System.out.println("we will compare database and api in this step");
@@ -72,7 +74,7 @@ public class ApiStepDefs {
         String actualLastName = jsonPath.getString("lastName");
         String actualRole = jsonPath.getString("role");
 
-        //compare
+        //compare database and api
         Assert.assertEquals(expectedFirstName,actualFirstName);
         Assert.assertEquals(expectedLastName,actualLastName);
         Assert.assertEquals(expectedRole,actualRole);
@@ -125,6 +127,14 @@ public class ApiStepDefs {
 
     @When("I send POST request to {string} endpoint with following information")
     public void i_send_POST_request_to_endpoint_with_following_information(String path, Map<String,String> studentInfo) {
+        //why we prefer to get information as a map from feature file ?
+        //bc we have queryParams method that takes map and pass to url as query key&value structure
+        System.out.println("studentInfo = " + studentInfo);
+
+        //assign email and password value to these variables so that we can use them later for deleting
+        studentEmail = studentInfo.get("email");
+        studentPassword = studentInfo.get("password");
+
         response = given().accept(ContentType.JSON)
                 .queryParams(studentInfo)
                 .and().header("Authorization", token)
@@ -136,27 +146,11 @@ public class ApiStepDefs {
     }
 
     @Then("I delete previously added student")
-    public void i_delete_previously_added_student(Map<String,String> studentInfo) {
+    public void i_delete_previously_added_student() {
+        //we have create one method to delete student
+        //you pass email and password of the student that you want to delete
+        BookItApiUtil.deleteStudent(studentEmail,studentPassword);
 
-        //1.send a get request to get token with student information
-        String studentToken = BookItApiUtil.generateToken(studentInfo.get("email"), studentInfo.get("password"));
-
-        //2.send a get request to /api/users/me endpoint and get the id number
-        int idToDelete = given().accept(ContentType.JSON)
-                .and().header("Authorization", studentToken)
-                .when()
-                .get(Environment.BASE_URL+"/api/users/me")
-                .then().statusCode(200).extract().jsonPath().getInt("id");
-
-        //3.send a delete request as a teacher to /api/students/{id} endpoint to delete the student
-        String teacherToken = BookItApiUtil.generateToken(Environment.TEACHER_EMAIL, Environment.TEACHER_PASSWORD);
-
-        given().pathParam("id", idToDelete)
-                .and().header("Authorization", teacherToken)
-                .when().delete(Environment.BASE_URL+"/api/students/{id}")
-                .then().statusCode(204);
-
-
-    }
+       }
 
  }
