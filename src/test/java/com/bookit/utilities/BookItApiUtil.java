@@ -7,7 +7,6 @@ import static io.restassured.RestAssured.given;
 
 public class BookItApiUtil {
 
-
     public static String generateToken(String email,String password){
         Response response = given().
                 accept(ContentType.JSON)
@@ -25,10 +24,8 @@ public class BookItApiUtil {
         return  finalToken;
     }
 
-
     //one method param role --> userType "student-member" "student-leader" "teacher"
     //returns --> token
-
 
     public static void deleteStudent(String studentEmail,String studentPassword){
 
@@ -67,6 +64,7 @@ public class BookItApiUtil {
                 email = Environment.TEACHER_EMAIL;
                 pass = Environment.TEACHER_PASSWORD;
                 break;
+
             case "student-member":
                 email = Environment.MEMBER_EMAIL;
                 pass = Environment.MEMBER_PASSWORD;
@@ -92,6 +90,7 @@ public class BookItApiUtil {
                         .extract().jsonPath().getString("accessToken");
 
         System.out.println(role+":"+accessToken);
+
         return "Bearer " + accessToken;
 
 

@@ -7,6 +7,9 @@ import com.bookit.utilities.*;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
+import io.restassured.http.ContentType;
+
+import static io.restassured.RestAssured.given;
 
 
 public class MyInfoStepDefs {
@@ -22,8 +25,6 @@ public class MyInfoStepDefs {
 	    signInPage.signInButton.click();
 		BrowserUtils.waitFor(10);
 
-
-	    	    
 	}
 
 	@When("user is on the my self page")

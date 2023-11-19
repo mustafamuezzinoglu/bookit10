@@ -153,4 +153,17 @@ public class ApiStepDefs {
 
        }
 
- }
+    @Given("I logged Bookit api as {string}")
+    public void i_logged_Bookit_api_as(String role) {
+        token= BookItApiUtil.getTokenByRole(role);
+    }
+
+    @When("I delete student {string}")
+    public void i_Delete_Student(String id) {
+        given().accept(ContentType.JSON)
+                .header("Authorization", token)
+                .pathParam("id", id)
+                .when()
+                .delete(Environment.BASE_URL + "/api/students/{id}");
+    }
+}
